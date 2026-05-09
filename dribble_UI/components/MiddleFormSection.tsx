@@ -6,6 +6,10 @@ export default function MiddleFormSection() {
     const [password, setPassword] = useState('');
 
     const handleSignIn = () => {
+        if(!email || !password) return (
+            alert('Please enter email and password')
+        )
+
         alert('Sign in button pressed');
         setEmail('');
         setPassword('');
@@ -53,7 +57,7 @@ export default function MiddleFormSection() {
 const style = StyleSheet.create({
     input: {
         backgroundColor: '#fff',
-        minWidth: '80%',
+        minWidth: '85%',
         width: '100%',
         height: 50,
         borderWidth: 1,

@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet} from "react-native";
 import TopSection from "../../components/TopSection";
 import MiddleFormSection from "../../components/MiddleFormSection";
 import BottomSection from "../../components/BottomSection";
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: '#f1f2f4',
+    backgroundColor: '#F5F5F5',
     gap: 40
   },
 });

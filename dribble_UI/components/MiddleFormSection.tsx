@@ -30,10 +30,11 @@ export default function MiddleFormSection() {
             </View>
 
             <View>
-                <Text>Enter password</Text>
+                <Text>Password</Text>
                 <TextInput
                     secureTextEntry={true}
-                    placeholder={'**********'}
+                    placeholder={'Enter password'}
+                    placeholderTextColor="#9ca3af"
                     style={style.input}
                     value={password}
                     onChangeText={setPassword}
@@ -41,7 +42,10 @@ export default function MiddleFormSection() {
             </View>
 
             <Pressable
-                style={style.button}
+                style={({pressed}) => [
+                    style.button,
+                    pressed && style.buttonPressed,
+                ]}
                 onPress={handleSignIn}
                 hitSlop={{
                     top: 10, bottom: 10, left: 20, right: 20
@@ -76,6 +80,11 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
+    },
+
+    buttonPressed: {
+        backgroundColor: '#57ad80',
+        transform: [{ scale: 0.98 }],
     },
 
     pressableInnerText: {

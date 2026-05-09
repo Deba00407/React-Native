@@ -7,8 +7,8 @@ export default function TopSection() {
                 source={require('@/assets/images/my-icons/app-icon2.png')}
                 style={style.image}
             />
-            <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sign In</Text>
-            <Text style={{fontSize: 18}}>May the source be with you</Text>
+            <Text style={{fontSize: 30, fontWeight: '500'}}>Sign In</Text>
+            <Text style={{fontSize: 18, fontWeight: '400'}}>May the source be with you</Text>
         </View>
     )
 }

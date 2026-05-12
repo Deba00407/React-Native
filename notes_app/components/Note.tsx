@@ -19,7 +19,6 @@ export default function Note({ note, onPressHandler }: NotePropsType) {
 
   return (
     <Pressable
-      key={note.id}
       style={styles.noteContainer}
       onPress={() => onPressHandler(note)}
     >

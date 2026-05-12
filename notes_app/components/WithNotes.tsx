@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, FlatList, View } from "react-native";
+import { StyleSheet, FlatList, View, Pressable, Text } from "react-native";
 import { NotesDataType } from "../utils/types/NotesDataType";
 import Note from "./Note";
 import { NoteType } from "../utils/types/NoteType";
@@ -93,6 +93,24 @@ const WithNotesScreen = ({ notesData }: NotesDataType) => {
         contentContainerStyle={styles.listContainer}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.addButton,
+          {
+            transform: [
+              {
+                scale: pressed ? 0.94 : 1,
+              },
+            ],
+
+            opacity: pressed ? 0.9 : 1,
+          },
+        ]}
+        onPress={() => setIsCreating(true)}
+      >
+        <Text style={styles.addButtonText}>+</Text>
+      </Pressable>
     </SafeWrapper>
   );
 };
@@ -120,6 +138,49 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     textAlign: "center",
   },
+
+  addButton: {
+    position: "absolute",
+
+    bottom: 28,
+
+    right: 24,
+
+    width: 64,
+
+    height: 64,
+
+    borderRadius: 32,
+
+    backgroundColor: "#111827",
+
+    justifyContent: "center",
+
+    alignItems: "center",
+
+    elevation: 8,
+
+    shadowColor: "#000",
+
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    shadowOpacity: 0.25,
+
+    shadowRadius: 8,
+  },
+
+  addButtonText: {
+    color: "#FFFFFF",
+
+    fontSize: 34,
+
+    fontWeight: "300",
+
+    marginTop: -2,
+  }
 });
 
 export default WithNotesScreen;

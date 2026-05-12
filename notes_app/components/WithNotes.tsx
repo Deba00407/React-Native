@@ -1,14 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, FlatList, View } from "react-native";
 import { NotesDataType } from "../utils/types/NotesDataType";
 import Note from "./Note";
+import { NoteType } from "../utils/types/NoteType";
+import NoteEditor from "./NoteEditor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const WithNotesScreen = ({ notesData }: NotesDataType) => {
+
+  async function saveNote(newNoteData: NoteType) {
+    try {
+      let savedData: NoteType[];
+
+      const data = await AsyncStorage.getItem("notes");
+      if (data === null) {
+        savedData = [];
+      } else {
+        const parsedData: NoteType[] = JSON.parse(data);
+        savedData = parsedData;
+      }
+
+      // insert new note into the array
+      savedData.push(newNoteData);
+
+      // save new data to local storage
+      await AsyncStorage.setItem("notes", JSON.stringify(savedData));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  async function deleteNote(noteid: string){
+    try {
+        let savedData: NoteType[];
+
+        const data = await AsyncStorage.getItem("notes");
+        if (data === null) {
+          savedData = [];
+        } else {
+          const parsedData: NoteType[] = JSON.parse(data);
+          savedData = parsedData;
+        }
+
+        // delete the current note
+        savedData = savedData.filter(note => note.id !== noteid);
+
+        // save new data to local storage
+        await AsyncStorage.setItem("notes", JSON.stringify(savedData));
+    } catch (error) {
+        console.error(error)
+    }
+  }
+  
+  const [selectedNote, setSelectedNote] = useState<NoteType | null>(null);
+
+  if(selectedNote){
+    return (
+      <NoteEditor currentNote={selectedNote} saveHandler={saveNote} deleteHandler={deleteNote} exitHandler={() => setSelectedNote(null)}/>
+    )
+  };
+
   return (
-    <FlatList
+    <FlatList<NoteType>
       data={notesData}
       keyExtractor={(note) => note.id}
-      renderItem={({ item }) => <Note {...item} />}
+      renderItem={({ item }: { item: NoteType }) => (
+        <Note
+          note={item}
+          onPressHandler={(clickedNote: NoteType) => setSelectedNote(clickedNote)}
+        />
+      )}
       contentContainerStyle={styles.listContainer}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
     />

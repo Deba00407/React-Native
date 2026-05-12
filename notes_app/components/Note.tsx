@@ -2,17 +2,21 @@ import React from "react";
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import { NoteType } from "../utils/types/NoteType";
 
-export default function Note(props: NoteType) {
+type NotePropsType = {
+  note: NoteType,
+  onPressHandler: (currNote: NoteType) => void;
+};
 
-  const handlePress = (id: string) => {
-    alert(`The note with id: ${id} was clicked.`);
-  }
-
+export default function Note({ note, onPressHandler }: NotePropsType) {
   return (
-    <Pressable id={props.id} style={styles.noteContainer} onPress={() => handlePress(props.id)}>
-      <Text style={styles.heading}>{props.heading}</Text>
-      <Text style={styles.preview}>{props.preview}</Text>
-      <Text style={styles.preview}>{props.mainContent}</Text>
+    <Pressable
+      key={note.id}
+      style={styles.noteContainer}
+      onPress={() => onPressHandler(note)}
+    >
+      <Text style={styles.heading}>{note.heading}</Text>
+      <Text style={styles.preview}>{note.preview}</Text>
+      <Text style={styles.preview}>{note.mainContent}</Text>
     </Pressable>
   );
 }

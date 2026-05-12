@@ -42,9 +42,7 @@ export default function Index() {
 
   return (
     <SafeWrapper>
-      <HomeScreen hasNotes={savedNotes === null ? false : true} notes={savedNotes} />
-
-      {/* <HomeScreen hasNotes={true} notes={sampleNotes} /> */}
+      <HomeScreen  notes={savedNotes} />
     </SafeWrapper>
   );
 }

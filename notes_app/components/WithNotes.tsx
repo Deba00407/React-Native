@@ -6,8 +6,13 @@ import { NoteType } from "../utils/types/NoteType";
 import NoteEditor from "./NoteEditor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SafeWrapper from "./SafeWrapper";
+import NoNotesScreen from "./NoNotes";
 
 const WithNotesScreen = ({ notesData }: NotesDataType) => {
+
+  const [isCreating, setIsCreating] = useState(false);
+
+  const [selectedNote, setSelectedNote] = useState<NoteType | null>(null);
 
   async function saveNote(newNoteData: NoteType) {
     try {
@@ -55,16 +60,22 @@ const WithNotesScreen = ({ notesData }: NotesDataType) => {
         console.error(error)
     }finally{
       setSelectedNote(null)
+      setIsCreating(false);
     }
   }
-  
-  const [selectedNote, setSelectedNote] = useState<NoteType | null>(null);
 
-  if(selectedNote){
+  if(selectedNote || isCreating){
     return (
-      <NoteEditor currentNote={selectedNote} saveHandler={saveNote} deleteHandler={deleteNote} exitHandler={() => setSelectedNote(null)}/>
+      <NoteEditor currentNote={selectedNote} saveHandler={saveNote} deleteHandler={deleteNote} exitHandler={() => {
+        setSelectedNote(null);
+        setIsCreating(false);
+      }}/>
     )
   };
+
+  if (notesData?.length === 0) {
+    return <NoNotesScreen onCreateFirstNote={() => setIsCreating(true)} />;
+  }
 
   return (
     <SafeWrapper>

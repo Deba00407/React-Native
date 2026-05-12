@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import { NoteType } from "../utils/types/NoteType";
+import dayjs from "dayjs";
 
 type NotePropsType = {
   note: NoteType,
@@ -8,6 +9,14 @@ type NotePropsType = {
 };
 
 export default function Note({ note, onPressHandler }: NotePropsType) {
+
+  const formattedTime = dayjs(note.timeStamp).format("DD MMM YYYY • hh:mm A");
+
+ const previewText =
+   note.mainContent.length > 25
+     ? note.mainContent.slice(0, 25) + "..."
+     : note.mainContent;
+
   return (
     <Pressable
       key={note.id}
@@ -15,8 +24,8 @@ export default function Note({ note, onPressHandler }: NotePropsType) {
       onPress={() => onPressHandler(note)}
     >
       <Text style={styles.heading}>{note.heading}</Text>
-      <Text style={styles.preview}>{note.preview}</Text>
-      <Text style={styles.preview}>{note.mainContent}</Text>
+      <Text style={styles.preview}>{previewText}</Text>
+      <Text style={styles.timestamp}>{formattedTime}</Text>
     </Pressable>
   );
 }
@@ -28,6 +37,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     padding: 16,
     borderRadius: 16,
+    minWidth: "90%",
 
     shadowColor: "#000",
     shadowOffset: {
@@ -38,6 +48,18 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
 
     elevation: 3,
+  },
+
+  timestamp: {
+    marginTop: 14,
+
+    alignSelf: "flex-end",
+
+    fontSize: 12,
+
+    color: "#9CA3AF",
+
+    fontWeight: "500",
   },
 
   heading: {

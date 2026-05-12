@@ -4,10 +4,10 @@ import NoNotesScreen from "./NoNotes";
 import WithNotesScreen from "./WithNotes";
 import { HomeScreenProps } from "../utils/types/HomeScreenProps";
 
-const HomeScreen = ({hasNotes, notes}: HomeScreenProps) => {
+const HomeScreen = ({notes}: HomeScreenProps) => {
     return (
         <View>
-            {hasNotes ? <WithNotesScreen notesData={notes}/> : <NoNotesScreen />}
+            <WithNotesScreen notesData={notes}/>
         </View>
     )
 }

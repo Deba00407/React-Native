@@ -58,9 +58,9 @@ const NoteEditor = ({
 
         heading: header,
 
-        preview: content.slice(0, 80),
-
         mainContent: content,
+
+        backGroundImage: "https://picsum.photos/400",
 
         timeStamp: dayjs(),
       };

@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import "react-native-get-random-values";
 
 import { v7 as uuidv7 } from "uuid";
+import SafeWrapper from "./SafeWrapper";
 
 type NoteEditorProps = {
   currentNote: NoteType | null;
@@ -84,128 +85,131 @@ const NoteEditor = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <View style={styles.card}>
-        <View style={styles.inputSection}>
-          <Text style={styles.label}>Heading</Text>
+    <SafeWrapper>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.card}>
+          <View style={styles.inputSection}>
+            <Text style={styles.label}>Heading</Text>
 
-          <TextInput
-            placeholder="Enter heading"
-            placeholderTextColor="#888"
-            value={header}
-            onChangeText={setHeader}
-            style={styles.headerInput}
-          />
-        </View>
-
-        <View style={[styles.inputSection, { flex: 1 }]}>
-          <Text style={styles.label}>Content</Text>
-
-          <TextInput
-            placeholder="Content here..."
-            placeholderTextColor="#888"
-            value={content}
-            onChangeText={setContent}
-            multiline
-            textAlignVertical="top"
-            textBreakStrategy="highQuality"
-            style={styles.contentInput}
-          />
-        </View>
-
-        {currentState && (
-          <Text style={styles.statusText}>
-            {currentState === "saving" ? "Saving..." : "Deleting..."}
-          </Text>
-        )}
-
-        <View style={styles.footerSection}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.actionButton,
-              {
-                transform: [
-                  {
-                    scale: pressed ? 0.92 : 1,
-                  },
-                ],
-
-                opacity: pressed ? 0.7 : 1,
-              },
-            ]}
-            onPress={handleSave}
-          >
-            <Image
-              source={require("@/assets/my-images/icons/save-icon-animated.png")}
-              style={styles.footerIcon}
+            <TextInput
+              placeholder="Enter heading"
+              placeholderTextColor="#888"
+              value={header}
+              onChangeText={setHeader}
+              style={styles.headerInput}
             />
-          </Pressable>
+          </View>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.actionButton,
-              {
-                transform: [
-                  {
-                    scale: pressed ? 0.92 : 1,
-                  },
-                ],
+          <View style={[styles.inputSection, { flex: 1 }]}>
+            <Text style={styles.label}>Content</Text>
 
-                opacity: pressed ? 0.7 : 1,
-              },
-            ]}
-            onPress={exitHandler}
-          >
-            <Image
-              source={require("@/assets/my-images/icons/exit-icon-animated.png")}
-              style={styles.footerIcon}
+            <TextInput
+              placeholder="Content here..."
+              placeholderTextColor="#888"
+              value={content}
+              onChangeText={setContent}
+              multiline
+              textAlignVertical="top"
+              textBreakStrategy="highQuality"
+              style={styles.contentInput}
             />
-          </Pressable>
+          </View>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.actionButton,
-              {
-                transform: [
-                  {
-                    scale: pressed ? 0.92 : 1,
-                  },
-                ],
+          {currentState && (
+            <Text style={styles.statusText}>
+              {currentState === "saving" ? "Saving..." : "Deleting..."}
+            </Text>
+          )}
 
-                opacity: pressed ? 0.7 : 1,
-              },
-            ]}
-            onPress={() => {
-              if (currentNote) {
-                handleDelete(currentNote.id);
-              }
-            }}
-          >
-            <Image
-              source={require("@/assets/my-images/icons/trash-icon-animated.png")}
-              style={styles.footerIcon}
-            />
-          </Pressable>
+          <View style={styles.footerSection}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.actionButton,
+                {
+                  transform: [
+                    {
+                      scale: pressed ? 0.92 : 1,
+                    },
+                  ],
+
+                  opacity: pressed ? 0.7 : 1,
+                },
+              ]}
+              onPress={handleSave}
+            >
+              <Image
+                source={require("@/assets/my-images/icons/save-icon-animated.png")}
+                style={styles.footerIcon}
+              />
+            </Pressable>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.actionButton,
+                {
+                  transform: [
+                    {
+                      scale: pressed ? 0.92 : 1,
+                    },
+                  ],
+
+                  opacity: pressed ? 0.7 : 1,
+                },
+              ]}
+              onPress={exitHandler}
+            >
+              <Image
+                source={require("@/assets/my-images/icons/exit-icon-animated.png")}
+                style={styles.footerIcon}
+              />
+            </Pressable>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.actionButton,
+                {
+                  transform: [
+                    {
+                      scale: pressed ? 0.92 : 1,
+                    },
+                  ],
+
+                  opacity: pressed ? 0.7 : 1,
+                },
+              ]}
+              onPress={() => {
+                if (currentNote) {
+                  handleDelete(currentNote.id);
+                }
+              }}
+            >
+              <Image
+                source={require("@/assets/my-images/icons/trash-icon-animated.png")}
+                style={styles.footerIcon}
+              />
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeWrapper>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: "#eef2f7",
+    minWidth: "80%",
 
     padding: 18,
   },
 
   card: {
     flex: 1,
+    minWidth: "100%",
 
     backgroundColor: "#ffffff",
 

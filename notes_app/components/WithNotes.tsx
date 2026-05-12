@@ -5,6 +5,7 @@ import Note from "./Note";
 import { NoteType } from "../utils/types/NoteType";
 import NoteEditor from "./NoteEditor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SafeWrapper from "./SafeWrapper";
 
 const WithNotesScreen = ({ notesData }: NotesDataType) => {
 
@@ -52,6 +53,8 @@ const WithNotesScreen = ({ notesData }: NotesDataType) => {
         await AsyncStorage.setItem("notes", JSON.stringify(savedData));
     } catch (error) {
         console.error(error)
+    }finally{
+      setSelectedNote(null)
     }
   }
   
@@ -64,18 +67,22 @@ const WithNotesScreen = ({ notesData }: NotesDataType) => {
   };
 
   return (
-    <FlatList<NoteType>
-      data={notesData}
-      keyExtractor={(note) => note.id}
-      renderItem={({ item }: { item: NoteType }) => (
-        <Note
-          note={item}
-          onPressHandler={(clickedNote: NoteType) => setSelectedNote(clickedNote)}
-        />
-      )}
-      contentContainerStyle={styles.listContainer}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
-    />
+    <SafeWrapper>
+      <FlatList<NoteType>
+        data={notesData}
+        keyExtractor={(note) => note.id}
+        renderItem={({ item }: { item: NoteType }) => (
+          <Note
+            note={item}
+            onPressHandler={(clickedNote: NoteType) =>
+              setSelectedNote(clickedNote)
+            }
+          />
+        )}
+        contentContainerStyle={styles.listContainer}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+      />
+    </SafeWrapper>
   );
 };
 

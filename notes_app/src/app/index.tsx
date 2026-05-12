@@ -28,7 +28,7 @@ export default function Index() {
     }
 
     findNotes();
-  }, []); // load only on the first load
+  }); // load every time to maintain updated state always
 
   // clear the data once
   // useEffect(() => {

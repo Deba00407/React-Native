@@ -20,6 +20,9 @@ const WithNotesScreen = ({ notesData }: NotesDataType) => {
         savedData = parsedData;
       }
 
+      // if the note already exists, remove the previous state and keep only the update state
+      savedData = savedData.filter((note) => note.id !== newNoteData.id);
+
       // insert new note into the array
       savedData.push(newNoteData);
 

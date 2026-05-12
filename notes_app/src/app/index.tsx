@@ -26,13 +26,25 @@ export default function Index() {
         return null;
       }
     }
+
+    findNotes();
   }, []); // load only on the first load
+
+  // clear the data once
+  // useEffect(() => {
+  //   async function clearStorage(){
+  //     await AsyncStorage.removeItem("notes");
+  //   }
+
+  //   clearStorage();
+  // }, []);
+
 
   return (
     <SafeWrapper>
-      {/* <HomeScreen hasNotes={savedNotes === null ? false : true} notes={savedNotes} /> */}
+      <HomeScreen hasNotes={savedNotes === null ? false : true} notes={savedNotes} />
 
-      <HomeScreen hasNotes={true} notes={sampleNotes} />
+      {/* <HomeScreen hasNotes={true} notes={sampleNotes} /> */}
     </SafeWrapper>
   );
 }

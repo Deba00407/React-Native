@@ -7,49 +7,81 @@ import {
   Platform,
   Text,
   Pressable,
+  Image,
 } from "react-native";
+
 import { NoteType } from "../utils/types/NoteType";
+
 import dayjs from "dayjs";
+
 import "react-native-get-random-values";
+
 import { v7 as uuidv7 } from "uuid";
 
 type NoteEditorProps = {
-  currentNote: NoteType | null,
-  saveHandler: (note: NoteType) => void,
-  deleteHandler: (id: string) => void,
-  exitHandler: () => void
+  currentNote: NoteType | null;
+
+  saveHandler: (note: NoteType) => Promise<void>;
+
+  deleteHandler: (id: string) => Promise<void>;
+
+  exitHandler: () => void;
 };
 
-const NoteEditor = ({ currentNote, saveHandler, deleteHandler, exitHandler }: NoteEditorProps) => {
+const NoteEditor = ({
+  currentNote,
+  saveHandler,
+  deleteHandler,
+  exitHandler,
+}: NoteEditorProps) => {
   const [header, setHeader] = useState<string>("");
+
   const [content, setContent] = useState<string>("");
+
+  const [currentState, setCurrentState] = useState<string | null>(null);
 
   useEffect(() => {
     if (currentNote) {
       setHeader(currentNote.heading);
+
       setContent(currentNote.mainContent);
     }
   }, [currentNote]);
 
-  const handleSave = () => {
-    const newNote: NoteType = {
-      id: currentNote ? currentNote.id : uuidv7(),
+  const handleSave = async () => {
+    try {
+      setCurrentState("Saving....");
 
-      heading: header,
+      const newNote: NoteType = {
+        id: currentNote ? currentNote.id : uuidv7(),
 
-      preview: content.slice(0, 80),
+        heading: header,
 
-      mainContent: content,
+        preview: content.slice(0, 80),
 
-      timeStamp: dayjs(),
-    };
+        mainContent: content,
 
-    saveHandler(newNote);
+        timeStamp: dayjs(),
+      };
+
+      await saveHandler(newNote);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCurrentState(null);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    deleteHandler(id)
-  }
+  const handleDelete = async (id: string) => {
+    try {
+      setCurrentState("Deleting....");
+      await deleteHandler(id);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCurrentState(null);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -69,7 +101,7 @@ const NoteEditor = ({ currentNote, saveHandler, deleteHandler, exitHandler }: No
           />
         </View>
 
-        <View style={styles.inputSection}>
+        <View style={[styles.inputSection, { flex: 1 }]}>
           <Text style={styles.label}>Content</Text>
 
           <TextInput
@@ -84,24 +116,80 @@ const NoteEditor = ({ currentNote, saveHandler, deleteHandler, exitHandler }: No
           />
         </View>
 
+        {currentState && (
+          <Text style={styles.statusText}>
+            {currentState === "saving" ? "Saving..." : "Deleting..."}
+          </Text>
+        )}
+
         <View style={styles.footerSection}>
-          <Pressable onPress={handleSave}>
-            <Text>SAVE</Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.actionButton,
+              {
+                transform: [
+                  {
+                    scale: pressed ? 0.92 : 1,
+                  },
+                ],
+
+                opacity: pressed ? 0.7 : 1,
+              },
+            ]}
+            onPress={handleSave}
+          >
+            <Image
+              source={require("@/assets/my-images/icons/save-icon-animated.png")}
+              style={styles.footerIcon}
+            />
           </Pressable>
 
-          <Pressable onPress={exitHandler}>
-            <Text>EXIT</Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.actionButton,
+              {
+                transform: [
+                  {
+                    scale: pressed ? 0.92 : 1,
+                  },
+                ],
+
+                opacity: pressed ? 0.7 : 1,
+              },
+            ]}
+            onPress={exitHandler}
+          >
+            <Image
+              source={require("@/assets/my-images/icons/exit-icon-animated.png")}
+              style={styles.footerIcon}
+            />
           </Pressable>
 
-          <Pressable onPress={() => {
-            if(currentNote){
+          <Pressable
+            style={({ pressed }) => [
+              styles.actionButton,
+              {
+                transform: [
+                  {
+                    scale: pressed ? 0.92 : 1,
+                  },
+                ],
+
+                opacity: pressed ? 0.7 : 1,
+              },
+            ]}
+            onPress={() => {
+              if (currentNote) {
                 handleDelete(currentNote.id);
-            }
-          }}>
-            <Text>DELETE</Text>
+              }
+            }}
+          >
+            <Image
+              source={require("@/assets/my-images/icons/trash-icon-animated.png")}
+              style={styles.footerIcon}
+            />
           </Pressable>
         </View>
-
       </View>
     </KeyboardAvoidingView>
   );
@@ -110,67 +198,183 @@ const NoteEditor = ({ currentNote, saveHandler, deleteHandler, exitHandler }: No
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 16,
+
+    backgroundColor: "#eef2f7",
+
+    padding: 18,
   },
 
   card: {
     flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 18,
-    padding: 18,
+
+    backgroundColor: "#ffffff",
+
+    borderRadius: 30,
+
+    paddingHorizontal: 22,
+
+    paddingTop: 24,
+
+    paddingBottom: 20,
+
     shadowColor: "#000",
+
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 10,
     },
+
     shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 4,
+
+    shadowRadius: 18,
+
+    elevation: 8,
   },
 
   inputSection: {
-    marginBottom: 24,
-  },
-
-  footerSection: {
-    flex: 1,
-    flexDirection: 'row',
-    gap: 10,
-    alignContent: 'center',
+    marginBottom: 28,
   },
 
   label: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#555",
+    fontSize: 14,
+
+    fontWeight: "700",
+
+    color: "#6b7280",
+
     marginBottom: 10,
-    marginLeft: 4,
+
+    marginLeft: 6,
+
+    letterSpacing: 0.5,
+
+    textTransform: "uppercase",
   },
 
   headerInput: {
-    fontSize: 22,
+    fontSize: 24,
+
     fontWeight: "700",
-    color: "#111",
-    backgroundColor: "#f8f8f8",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+
+    color: "#111827",
+
+    backgroundColor: "#f8fafc",
+
+    borderRadius: 20,
+
+    paddingHorizontal: 18,
+
+    paddingVertical: 16,
+
     borderWidth: 1,
-    borderColor: "#e5e5e5",
+
+    borderColor: "#e5e7eb",
+
+    shadowColor: "#000",
+
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+
+    shadowOpacity: 0.03,
+
+    shadowRadius: 5,
+
+    elevation: 1,
   },
 
+  statusText: {
+  textAlign: "center",
+
+  color: "#6b7280",
+
+  fontSize: 13,
+
+  marginBottom: 8,
+},
+
   contentInput: {
-    minHeight: 250,
+    minHeight: 320,
+
     fontSize: 17,
-    color: "#222",
-    lineHeight: 28,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+
+    color: "#1f2937",
+
+    lineHeight: 30,
+
+    textAlignVertical: "top",
+
+    backgroundColor: "#f8fafc",
+
+    borderRadius: 20,
+
+    paddingHorizontal: 18,
+
+    paddingVertical: 18,
+
     borderWidth: 1,
-    borderColor: "#e5e5e5",
+
+    borderColor: "#e5e7eb",
+
+    shadowColor: "#000",
+
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+
+    shadowOpacity: 0.03,
+
+    shadowRadius: 5,
+
+    elevation: 1,
+  },
+
+  footerSection: {
+    marginTop: "auto",
+
+    flexDirection: "row",
+
+    justifyContent: "space-evenly",
+
+    alignItems: "center",
+
+    paddingTop: 8,
+  },
+
+  actionButton: {
+    justifyContent: "center",
+
+    alignItems: "center",
+
+    paddingVertical: 10,
+
+    paddingHorizontal: 16,
+  },
+
+  footerIcon: {
+    height: 34,
+
+    width: 34,
+
+    resizeMode: "contain",
+
+    opacity: 0.96,
+  },
+
+  buttonText: {
+    marginTop: 6,
+
+    color: "#4b5563",
+
+    fontSize: 11,
+
+    fontWeight: "700",
+
+    letterSpacing: 1.2,
+
+    textTransform: "uppercase",
   },
 });
 
